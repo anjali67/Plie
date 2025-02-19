@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   View,
   Text,
@@ -6,6 +6,7 @@ import {
   TouchableOpacity,
   StyleSheet,
   ActivityIndicator,
+  TextInput,
 } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchEvents, toggleFavorite } from '../redux/eventSlice';
@@ -14,16 +15,30 @@ import { windowWidth } from '../theme/appConstant';
 export default function EventsScreen() {
   const dispatch = useDispatch();
   const { events, loading, error, favorites } = useSelector((state) => state.event);
+  const [searchItems, setSearchItems] = useState([]);
+  const [query, setQuery] = useState('');
 
   useEffect(() => {
     dispatch(fetchEvents());
   }, [dispatch]);
 
+  useEffect(() => {
+    if (events?.events) {
+      if (query) {
+        const filteredItems = events.events.filter((event) =>
+          event.event_name.toLowerCase().includes(query.toLowerCase())
+        );
+        setSearchItems(filteredItems);
+      } else {
+        setSearchItems(events.events);
+      }
+    }
+  }, [events, query]);
+
   const favoriteEvents = events?.events?.filter((event) =>
     favorites.includes(event.event_date_id)
   );
 
-  // Render each event item
   const renderItem = ({ item }) => (
     <View style={styles.item}>
       <View style={styles.eventDetails}>
@@ -38,21 +53,29 @@ export default function EventsScreen() {
     </View>
   );
 
-  // Show loading indicator while fetching data
   if (loading) {
     return <ActivityIndicator size="large" color="#0000ff" />;
   }
 
-  // Show error message if there's an error
   if (error) {
     return <Text style={styles.error}>Error: {error}</Text>;
   }
 
   return (
     <View style={styles.container}>
+      {/* Search Input */}
+      <TextInput
+        placeholder="Search"
+        placeholderTextColor="blue"
+        color="black"
+        value={query}
+        onChangeText={(text) => setQuery(text)}
+        style={styles.searchInput}
+      />
+
       {/* All Events List */}
       <FlatList
-        data={events?.events}
+        data={searchItems}
         renderItem={renderItem}
         keyExtractor={(item) => item.event_date_id.toString()}
         ListEmptyComponent={() => (
@@ -82,6 +105,13 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 16,
+  },
+  searchInput: {
+    borderWidth: 1,
+    borderColor: '#ccc',
+    borderRadius: 5,
+    padding: 10,
+    marginBottom: 16,
   },
   item: {
     flexDirection: 'row',

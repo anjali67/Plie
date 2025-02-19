@@ -1,8 +1,7 @@
 import { StyleSheet } from "react-native";
-import appColors from "../../theme/appColors";
-import { fontSizes, windowHeight, windowWidth } from "../../theme/appConstant";
-import appFonts from "../../theme/appFonts";
-
+import appColors from "../theme/appColors";
+import { windowHeight , windowWidth ,fontSizes } from "../theme/appConstant";
+import appFonts from "../theme/appFonts";
 export default styles = StyleSheet.create({
     container:{
         flex:1,

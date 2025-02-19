@@ -2,7 +2,7 @@ import { View, TextInput, StyleSheet, Text,TouchableOpacity } from 'react-native
 import React , {useState} from 'react'
 import appColors from '../../../theme/appColors'
 import appFonts from '../../../theme/appFonts'
-import { fontSizes, windowHeight, windowWidth } from '../../../theme/appConstant'
+import { fontSizes , windowHeight , windowWidth } from '../../../theme/appConstant'
 import { Eye } from '../../../assets/icons/eye'
 import { EyeOff } from '../../../assets/icons/eyeOff'
 
@@ -15,7 +15,7 @@ export default function TextInputView(props) {
   return (
     <View style={styles.container}>
       <Text style={styles.label}>{props.label}</Text>
-      <View style={[styles.inputContainer, props.error ? styles.inputError : null]}>
+      <View style={[styles.inputContainer,  props.error && ({borderColor:appColors.error,borderWidth:1})]}>
         <TextInput
           style={styles.textInput}
           placeholder={props.placeholder}

@@ -1,16 +1,16 @@
 import { View, Text,Image,TouchableOpacity } from 'react-native'
 import React from 'react'
 import styles from './styles'
-import { Google } from '../../../assets/icons/google'
-import { Facebook } from '../../../assets/icons/facebook'
-import { Apple } from '../../../assets/icons/apple'
+import { Google } from '../../assets/icons/google'
+import { Facebook } from '../../assets/icons/facebook'
+import { Apple } from '../../assets/icons/apple'
 
 export default function SocialLogin() {
   return (
     <View>
        <View style={styles.signInView}>
         <Image
-          source={require('../../../assets/images/divider.png')}
+          source={require('../../assets/images/divider.png')}
           style={styles.img}
         />
         <Text

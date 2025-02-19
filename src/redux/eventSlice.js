@@ -1,37 +1,36 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
-import { EVENTLISTINGAPI } from '../api';
 
 export const fetchEvents = createAsyncThunk(
   'events/fetchEvents',
   async (_, { getState, rejectWithValue }) => {
     try {
-      const { auth } = getState(); 
-      const token = auth.token; 
+      const { auth } = getState(); // Access the auth state
+      const token = auth.token; // Get the token
 
       const response = await axios.post(
-        EVENTLISTINGAPI,
-        {}, 
+        'http://3.7.81.243/projects/plie-api/public/api/events-listing',
+        {}, // Empty body for POST request (if required)
         {
           headers: {
-            Authorization: `Bearer ${token}`, 
+            Authorization: `Bearer ${token}`, // Pass the token in the header
           },
         }
       );
-      console.log("RESPONSE DATA IS ===========>",response)
-      return response.data; 
+      
+      return response.data; // Return the API response
     } catch (error) {
-      console.log("error is",error)
-      return rejectWithValue(error.response.data);
+      return rejectWithValue(error.response?.data || 'Failed to fetch events');
     }
   }
 );
 
+
 const eventSlice = createSlice({
-  name: 'events',
+  name: 'event',
   initialState: {
-    events: [],
-    favorites: [],
+    events: [], // Initialize events as an empty array
+    favorites: [], // Initialize favorites as an empty array
     loading: false,
     error: null,
   },
@@ -45,6 +44,7 @@ const eventSlice = createSlice({
         state.favorites.push(eventId);
       }
     },
+  
   },
   extraReducers: (builder) => {
     builder
@@ -54,7 +54,8 @@ const eventSlice = createSlice({
       })
       .addCase(fetchEvents.fulfilled, (state, action) => {
         state.loading = false;
-        state.events = action.payload; 
+        // Assuming the API response has a `data` key containing `events`
+        state.events = action.payload.data || []; // Handle undefined data
       })
       .addCase(fetchEvents.rejected, (state, action) => {
         state.loading = false;
